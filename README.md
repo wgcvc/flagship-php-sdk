@@ -11,11 +11,20 @@
 * Flagship.io official documentation:  
   http://developers.flagship.io/api/v1/
 
-## Requirements
+## Installation
+
+Package is available on [Packagist](https://packagist.org/packages/wcomnisky/flagship-php-sdk),
+you can install it using [Composer](https://getcomposer.org).
+
+```shell
+composer require wcomnisky/flagship-php-sdk
+```
+
+### Requirements
 
 * PHP 7.3 or higher
   * cURL extension recommended
-  
+
 ## List of implemented features
 
 **Run all Campaigns assignment**
