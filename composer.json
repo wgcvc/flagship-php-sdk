@@ -6,7 +6,7 @@
     "authors": [
         {
             "name": "William Comnisky",
-            "email": "william.comnisky@vestiairecollective.com"
+            "email": "w.comnisky@gmail.com"
         }
     ],
     "require": {
@@ -26,6 +26,15 @@
         "psr-4": {
             "Wcomnisky\\Flagship\\UnitTests\\": "test/unit",
             "Wcomnisky\\Flagship\\FunctionalTests\\": "test/functional"
+        }
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "develop"
         }
     }
 }
