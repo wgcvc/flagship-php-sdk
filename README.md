@@ -4,6 +4,11 @@
 * Flagship.io official documentation:  
   http://developers.flagship.io/api/v1/
 
+## Requirements
+
+* PHP 7.3 or higher
+  * cURL extension recommended
+  
 ## List of implemented features
 
 **Run all Campaigns assignment**
