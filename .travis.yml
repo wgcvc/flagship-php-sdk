@@ -30,6 +30,9 @@ jobs:
         - if [[ ! $(php -m | grep -si xdebug) ]]; then echo "xdebug required for code coverage"; exit 1; fi
       script:
         - ./vendor/bin/phpunit --testsuite=unit --coverage-clover ./clover.xml
+      after_script:
+        - wget https://scrutinizer-ci.com/ocular.phar
+        - php ocular.phar code-coverage:upload --format=php-clover ./clover.xml
 
     - stage: Metrics and quality
       env: CODE_STANDARD
