@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Wcomnisky\Flagship;
 
-use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
@@ -24,6 +23,7 @@ class Flagship
     private const URL_BASE = 'https://decision-api.flagship.io/v1';
     private const URL_ALL_CAMPAIGNS = self::URL_BASE . '/' . self::NAMED_PARAM_ENV_ID . '/campaigns';
     private const URL_SINGLE_CAMPAIGN = self::URL_ALL_CAMPAIGNS . '/' . self::NAMED_PARAM_CAMPAIGN_ID;
+    private const URL_CAMPAIGN_ACTIVATION = self::URL_BASE . '/activate';
 
     /**
      * @var RequestParameters
@@ -69,6 +69,51 @@ class Flagship
     }
 
     /**
+     * Affects a visitor to a variation. It should be use to manually activate a single
+     * campaign and variation in case you do not automatically activate them when running
+     * campaign assignment (See trigger_hit parameter)
+     *
+     * It returns a 204 HTTP response
+     *
+     * @param string $visitorId
+     * @param string $variationGroupId
+     * @param string $variationId
+     * @return ResponseInterface
+     * @throws TransportExceptionInterface
+     * @see http://developers.flagship.io/api/v1/?shell#campaign-activation
+     * @see http://developers.flagship.io/api/v1/?shell#trigger-hit
+     */
+    public function requestCampaignActivation(
+        string $visitorId,
+        string $variationGroupId,
+        string $variationId
+    ): ResponseInterface {
+
+        $jsonArray = [
+            'vid' => $visitorId,
+            'cid' => $this->environmentId,
+            'caid' => $variationGroupId,
+            'vaid' => $variationId
+        ];
+
+        $response = $this->httpClient->request(
+            'POST',
+            self::URL_CAMPAIGN_ACTIVATION,
+            [
+                'json' => $jsonArray
+            ]
+        );
+
+        return $response;
+    }
+
+    /**
+     * Retrieves the affection of your visitor ID with a specific
+     * context (key/value pairs) to the specified campaign ID.
+     *
+     * By default, the API will send a hit to trigger a campaign
+     * assignment event for the visitor ID and the affected campaign.
+     *
      * @param string $visitorId ID of the visitor
      * @param string $campaignId The same as Custom ID on their docs
      * @param ContextInterface $context
@@ -100,9 +145,35 @@ class Flagship
         return $response;
     }
 
+    /**
+     * Retrieves all the campaigns affected to your visitor and the context (key/value pairs).
+     *
+     * By default, the API will send a hit to trigger a campaign
+     * assignment event for the visitor ID and each affected campaign.
+     *
+     * @param string $visitorId
+     * @param ContextInterface $context
+     * @return ResponseInterface
+     * @throws TransportExceptionInterface
+     */
     public function requestAllCampaigns(string $visitorId, ContextInterface $context): ResponseInterface
     {
-        return new MockResponse();
+        $jsonArray = [
+            'visitor_id' => $visitorId,
+            'context' => $context->getList(),
+            'decision_group' => $this->requestParameters->getDecisionGroup(),
+            'trigger_hit' => $this->requestParameters->isTriggerHitEnabled()
+        ];
+
+        $response = $this->httpClient->request(
+            'POST',
+            $this->getAllCampaignsUrl(),
+            [
+                'json' => $jsonArray
+            ]
+        );
+
+        return $response;
     }
 
     /**
@@ -117,18 +188,42 @@ class Flagship
         return str_replace(array_keys($namedParamKVP), array_values($namedParamKVP), $source);
     }
 
+    /**
+     * Returns the SingleCampaign URL with the Environment ID and Campaign ID in place
+     *
+     * @param string $campaignId
+     * @return string
+     */
     private function getSingleCampaignUrl(string $campaignId): string
     {
-        return $this->replaceNamedParameter(self::URL_SINGLE_CAMPAIGN, [
-            self::NAMED_PARAM_ENV_ID => $this->environmentId,
-            self::NAMED_PARAM_CAMPAIGN_ID => $campaignId
-        ]);
+        return $this->replaceNamedParameter(
+            self::URL_SINGLE_CAMPAIGN,
+            [
+                self::NAMED_PARAM_ENV_ID => $this->environmentId,
+                self::NAMED_PARAM_CAMPAIGN_ID => $campaignId
+            ]
+        );
     }
 
+    /**
+     * Returns the AllCampaigns URL with the Environment ID in place. If the Mode is
+     * different than normal (default) it is appended to the URL as a Query String
+     *
+     * @return string
+     */
     private function getAllCampaignsUrl(): string
     {
-        return $this->replaceNamedParameter(self::URL_ALL_CAMPAIGNS, [
-            self::NAMED_PARAM_ENV_ID => $this->environmentId,
-        ]);
+        $url = $this->replaceNamedParameter(
+            self::URL_ALL_CAMPAIGNS,
+            [
+                self::NAMED_PARAM_ENV_ID => $this->environmentId
+            ]
+        );
+
+        if (! $this->requestParameters->isDefaultMode()) {
+            $url .= '?mode=' . $this->requestParameters->getMode();
+        }
+
+        return $url;
     }
 }

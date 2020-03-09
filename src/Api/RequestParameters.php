@@ -148,4 +148,14 @@ class RequestParameters
     {
         return $this->mode;
     }
+
+    /**
+     * Returns a bool if the Mode is currently set to its default value (normal) or not
+     *
+     * @return bool
+     */
+    public function isDefaultMode(): bool
+    {
+        return $this->mode === 'normal';
+    }
 }

@@ -49,15 +49,21 @@ class RequestParametersTest extends TestCase
      * @covers \Wcomnisky\Flagship\Api\RequestParameters::enableModeNormal
      * @covers \Wcomnisky\Flagship\Api\RequestParameters::enableModeFull
      * @covers \Wcomnisky\Flagship\Api\RequestParameters::getMode
+     * @covers \Wcomnisky\Flagship\Api\RequestParameters::isDefaultMode
      */
     public function test_successful_enableModeNormal()
     {
         $parameters = new RequestParameters();
         $this->assertSame('normal', $parameters->getMode());
+        $this->assertTrue($parameters->isDefaultMode());
+
         $parameters->enableModeFull();
         $this->assertNotSame('normal', $parameters->getMode());
+        $this->assertFalse($parameters->isDefaultMode());
+
         $parameters->enableModeNormal();
         $this->assertSame('normal', $parameters->getMode());
+        $this->assertTrue($parameters->isDefaultMode());
     }
 
     /**
