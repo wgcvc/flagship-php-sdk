@@ -86,4 +86,19 @@ class RequestParametersTest extends TestCase
         $parameters->enableTriggerHit();
         $this->assertSame(true, $parameters->isTriggerHitEnabled());
     }
+
+    /**
+     * @covers \Wcomnisky\Flagship\Api\RequestParameters::disableFormatResponse
+     * @covers \Wcomnisky\Flagship\Api\RequestParameters::enableFormatResponse
+     * @covers \Wcomnisky\Flagship\Api\RequestParameters::isFormatResponseEnabled
+     */
+    public function test_successful_disableFormatResponse_and_enableFormatResponse()
+    {
+        $parameters = new RequestParameters();
+        $this->assertSame(false, $parameters->isFormatResponseEnabled());
+        $parameters->enableFormatResponse();
+        $this->assertSame(true, $parameters->isFormatResponseEnabled());
+        $parameters->disableFormatResponse();
+        $this->assertSame(false, $parameters->isFormatResponseEnabled());
+    }
 }
