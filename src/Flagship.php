@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Wcomnisky\Flagship;
 
-use http\Client\Response;
 use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
