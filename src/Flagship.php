@@ -85,7 +85,7 @@ class Flagship
             'visitor_id' => $visitorId,
             'context' => $context->getList(),
             'decision_group' => $this->requestParameters->getDecisionGroup(),
-            'format_response' => true, // this has to be added to the request parameters
+            'format_response' => $this->requestParameters->isFormatResponseEnabled(),
             'trigger_hit' => $this->requestParameters->isTriggerHitEnabled()
         ];
 

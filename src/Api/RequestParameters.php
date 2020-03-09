@@ -38,6 +38,43 @@ class RequestParameters
     private $mode = 'normal';
 
     /**
+     * Format Response
+     *
+     * If set to true, the response of the API call will be formatted according to your modification
+     *
+     * @var bool
+     * @see http://developers.flagship.io/api/v1/#run-a-single-campaign-assignment
+     * @see http://developers.flagship.io/api/v1/#formatted-campaign
+     */
+    private $formatResponse = false;
+
+    /**
+     * Enables the Format Response
+     */
+    public function enableFormatResponse(): void
+    {
+        $this->formatResponse = true;
+    }
+
+    /**
+     * Disables the Format Response
+     */
+    public function disableFormatResponse(): void
+    {
+        $this->formatResponse = false;
+    }
+
+    /**
+     * Returns a bool if Format Response parameter is enabled/disabled
+     *
+     * @return bool
+     */
+    public function isFormatResponseEnabled(): bool
+    {
+        return $this->formatResponse;
+    }
+
+    /**
      * @param string $decisionGroup
      */
     public function setDecisionGroup(string $decisionGroup): void

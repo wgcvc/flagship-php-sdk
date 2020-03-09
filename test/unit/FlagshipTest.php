@@ -40,6 +40,7 @@ class FlagshipTest extends TestCase
      * @uses \Wcomnisky\Flagship\Api\RequestParameters::getMode()
      * @uses \Wcomnisky\Flagship\Api\RequestParameters::isTriggerHitEnabled()
      * @uses \Wcomnisky\Flagship\Api\RequestParameters::getDecisionGroup()
+     * @uses \Wcomnisky\Flagship\Api\RequestParameters::isFormatResponseEnabled()
      */
     public function test_successful_requestSingleCampaign_with_no_request_parameters()
     {
@@ -62,7 +63,7 @@ class FlagshipTest extends TestCase
                             'visitor_id' => $visitorId,
                             'context' => [],
                             'decision_group' => null,
-                            'format_response' => true,
+                            'format_response' => false,
                             'trigger_hit' => true
                         ]
                     ];
